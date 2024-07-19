@@ -11,14 +11,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("")
+@RequestMapping("/category")
 @CrossOrigin("*")
 public class CategoryController {
 
     @Autowired
     private ICategoryService categoryService;
 
-    @GetMapping("/admin/category")
+    @GetMapping("")
     public List<CategoryModel> getAllCategory() {
         return categoryService.findAll();
     }
