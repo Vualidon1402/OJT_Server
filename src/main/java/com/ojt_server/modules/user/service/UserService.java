@@ -14,7 +14,7 @@ public class UserService {
     private UserRepository userRepository;
 
 
-//    findById
+
 
     //hiển thị danh sách user
     public List<UserModel> findUsers(){
@@ -31,11 +31,10 @@ public class UserService {
             System.out.println("User not found with id: " + id);
             return null;
         }
-
-
     }
-
-
-
+    //tìm kiếm user theo useName
+    public List<UserModel> findByUserName(String userName){
+        return userRepository.findByUsernameContains(userName);
+    }
 
 }

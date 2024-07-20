@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-
+import java.util.List;
 
 
 @RestController
@@ -44,10 +44,20 @@ public class UserController {
         }catch (Exception e){
             return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
         }
-
-
-
-
+    }
+    //tìm kiếm user theo userName
+    @GetMapping("/findByUserName/{userName}")
+    public ResponseEntity<Object> findByUserName(@PathVariable String userName){
+        try{
+            List<UserModel> users = userService.findByUserName(userName);
+            if(!users.isEmpty()){
+                return new ResponseEntity<>(users, HttpStatus.OK);
+            }else{
+                return new ResponseEntity<>("No users found with userName containing: " + userName, HttpStatus.NOT_FOUND);
+            }
+        }catch (Exception e){
+            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
