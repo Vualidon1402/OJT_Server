@@ -24,16 +24,16 @@ public class CategoryModel {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "created_at")
-    private Date createdAt;
+    private Date createdAt = new Date();
 
     @Column(name = "description", length = 255)
     private String description;
 
-    @Column(name = "image", length = 255)
+    @Column(name = "image")
     private String image;
 
     @Column(name = "status", nullable = false)
-    private boolean status;
+    private boolean status = true;
 
     @Override
     public String toString() {
