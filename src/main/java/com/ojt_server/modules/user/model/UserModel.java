@@ -45,7 +45,7 @@ public class UserModel {
     private double point;
 
     @Column(name = "status")
-    private Byte status;
+    private boolean status;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "updated_at")
