@@ -3,8 +3,10 @@ package com.ojt_server.modules.user.controller;
 import com.ojt_server.modules.user.model.UserModel;
 import com.ojt_server.modules.user.reqository.UserRepository;
 import com.ojt_server.modules.user.service.UserService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -56,6 +58,25 @@ public class UserController {
                 return new ResponseEntity<>("No users found with userName containing: " + userName, HttpStatus.NOT_FOUND);
             }
         }catch (Exception e){
+            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+        }
+    }
+    //sắp xếp user
+    @GetMapping("/sort")
+    public ResponseEntity<Object> sortUser(@RequestParam(defaultValue = "asc") String sortType) {
+        try {
+            return new ResponseEntity<>(userService.sortUser(sortType), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+        }
+    }
+    // phân trang user
+    @GetMapping("/find")
+    public ResponseEntity<Object> findUsers(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "2") int size) {
+        try {
+            Page<UserModel> usersPage = userService.findUsers(page, size);
+            return new ResponseEntity<>(usersPage, HttpStatus.OK);
+        } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
         }
     }
