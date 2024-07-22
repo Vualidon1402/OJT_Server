@@ -26,19 +26,19 @@ public class UserModel {
     @Column(name = "created_at")
     private Date createdAt;
 
-    @Column(name = "email", length = 255)
+    @Column(name = "email", length = 255,unique = true)
     private String email;
 
     @Column(name = "full_name", length = 255)
     private String fullName;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted;
+    private boolean isDeleted = true;
 
     @Column(name = "password", length = 255)
     private String password;
 
-    @Column(name = "phone", length = 255)
+    @Column(name = "phone", length = 255,unique = true)
     private String phone;
 
     @Column(name = "point", nullable = false)
@@ -51,7 +51,7 @@ public class UserModel {
     @Column(name = "updated_at")
     private Date updatedAt;
 
-    @Column(name = "username", length = 255)
+    @Column(name = "username", length = 255,unique = true)
     private String username;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
