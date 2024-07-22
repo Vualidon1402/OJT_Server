@@ -1,9 +1,12 @@
 package com.ojt_server.modules.category;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.ojt_server.modules.product.ProductModel;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -29,11 +32,15 @@ public class CategoryModel {
     @Column(name = "description", length = 255)
     private String description;
 
-    @Column(name = "image")
+    @Column(name = "image", length = 255)
     private String image;
 
     @Column(name = "status", nullable = false)
     private boolean status = true;
+
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private Set<ProductModel> products;
 
     @Override
     public String toString() {

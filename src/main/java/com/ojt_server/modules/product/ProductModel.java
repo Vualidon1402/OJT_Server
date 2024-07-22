@@ -1,10 +1,17 @@
 package com.ojt_server.modules.product;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.ojt_server.modules.brand.BrandModel;
 import com.ojt_server.modules.category.CategoryModel;
+import com.ojt_server.modules.comment.CommentModel;
+import com.ojt_server.modules.image.ImageModel;
+import com.ojt_server.modules.product_detail.ProductDetailModel;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -37,18 +44,30 @@ public class ProductModel {
     private String sku;
 
     @Column(name = "status", nullable = false)
-    private boolean status;
+    private boolean status = true;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "update_at")
     private Date updatedAt;
 
-    @Column(name = "brand_id")
-    private Long brandId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brand_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private BrandModel brand;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = false)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "products"})
     private CategoryModel category;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ImageModel> images;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<CommentModel> comments;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<ProductDetailModel> productDetails;
 
     @Override
     public String toString() {
@@ -61,8 +80,11 @@ public class ProductModel {
                 ", sku='" + sku + '\'' +
                 ", status=" + status +
                 ", updatedAt=" + updatedAt +
-                ", brandId=" + brandId +
+                ", brand=" + brand +
                 ", category=" + category +
+                ", images=" + images +
+                ", comments=" + comments +
+                ", productDetails=" + productDetails +
                 '}';
     }
 }
