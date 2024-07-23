@@ -33,7 +33,7 @@ public class UserModel {
     private String fullName;
 
     @Column(name = "is_deleted", nullable = false)
-    private boolean isDeleted = true;
+    private boolean isDeleted ;
 
     @Column(name = "password", length = 255)
     private String password;
@@ -45,7 +45,7 @@ public class UserModel {
     private double point;
 
     @Column(name = "status")
-    private boolean status;
+    private boolean status = true;
 
     @Temporal(TemporalType.DATE)
     @Column(name = "updated_at")
@@ -62,4 +62,23 @@ public class UserModel {
     )
 
     private Set<Role> roles;
+
+    @Override
+    public String toString() {
+        return "UserModel{" +
+                "id=" + id +
+                ", avatar='" + avatar + '\'' +
+                ", createdAt=" + createdAt +
+                ", email='" + email + '\'' +
+                ", fullName='" + fullName + '\'' +
+                ", isDeleted=" + isDeleted +
+                ", password='" + password + '\'' +
+                ", phone='" + phone + '\'' +
+                ", point=" + point +
+                ", status=" + status +
+                ", updatedAt=" + updatedAt +
+                ", username='" + username + '\'' +
+                ", roles=" + roles +
+                '}';
+    }
 }

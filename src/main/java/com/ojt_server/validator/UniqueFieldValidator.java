@@ -31,6 +31,7 @@ public class UniqueFieldValidator implements ConstraintValidator<UniqueField, St
             case "email" -> !userRepository.existsByEmail(value);
             case "phone" -> !userRepository.existsByPhone(value);
 
+
             default -> throw new IllegalArgumentException("Invalid field name: " + fieldName);
         };
     }
