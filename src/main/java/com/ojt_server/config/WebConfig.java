@@ -3,6 +3,7 @@ package com.ojt_server.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
@@ -19,6 +20,14 @@ public class WebConfig implements WebMvcConfigurer {
                         .allowCredentials(true); // Cho phép gửi thông tin xác thực
             }
         };
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new AuthenInterceptor())
+
+                .addPathPatterns("/users/authen");
+
     }
 
 }

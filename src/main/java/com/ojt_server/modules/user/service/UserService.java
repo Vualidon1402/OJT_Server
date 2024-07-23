@@ -23,6 +23,10 @@ public class UserService {
     private RoleRepository roleRepository;
 
 
+    public UserModel findUserByInfor(String loginId){
+        return userRepository.findUserByInfor(loginId);
+    }
+
 
     //hiển thị danh sách user
     public List<UserModel> findUsers(){
@@ -105,7 +109,7 @@ public class UserService {
         Optional<UserModel> optionalUser = userRepository.findById(userId);
         if (optionalUser.isPresent()) {
             UserModel user = optionalUser.get();
-            user.setStatus(true); // Set status to true to indicate the account is activated
+            user.setDeleted(true); // Set status to true to indicate the account is activated
             userRepository.save(user);
             return user;
         }

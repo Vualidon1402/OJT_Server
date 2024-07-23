@@ -1,18 +1,19 @@
 package com.ojt_server.modules.user.controller;
 
+import com.ojt_server.modules.user.dto.LoginDTO;
 import com.ojt_server.modules.user.dto.OtpVerificationDTO;
 import com.ojt_server.modules.user.dto.RegisterDTO;
 import com.ojt_server.modules.user.email.CreateRespone;
 import com.ojt_server.modules.user.email.EmailService;
 import com.ojt_server.modules.user.email.OtpService;
-import com.ojt_server.modules.user.model.Role;
-import com.ojt_server.modules.user.model.RoleName;
+
 import com.ojt_server.modules.user.model.UserModel;
 import com.ojt_server.modules.user.reqository.RoleRepository;
-import com.ojt_server.modules.user.reqository.UserRepository;
+
 import com.ojt_server.modules.user.service.UserService;
 
 
+import com.ojt_server.util.jwt.JwtService;
 import jakarta.validation.Valid;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
 
-import java.util.ArrayList;
-import java.util.Date;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 
@@ -115,12 +119,11 @@ public class UserController {
 //    //đăng ký tài khoản
 @PostMapping("/register")
 public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerDTO){
-    System.out.println("registerDTO: " + registerDTO);
+
     try{
         String hashedPassword = BCrypt.hashpw(registerDTO.getPassword(), BCrypt.gensalt());
         registerDTO.setPassword(hashedPassword);
         UserModel user = userService.register(registerDTO);
-        System.out.println("user1: " + user);
         if(user != null) {
             CreateRespone createRespone = new CreateRespone();
             createRespone.setData(user);
@@ -162,4 +165,53 @@ public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerD
             return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
         }
     }
+
+    //đăng nhập tài khoản
+    @PostMapping("/login")
+    public ResponseEntity<Object> login(@Valid @RequestBody LoginDTO data){
+        System.out.println("data: " + data);
+       try{
+           UserModel user = userService.findUserByInfor(data.getLoginId());
+           System.out.println("user: " + user);
+
+           if (user == null) {
+               throw new Exception("Tài khoản không tồn tại");
+           }
+           if (!BCrypt.checkpw(data.getPassword(), user.getPassword())) {
+               throw new Exception("Sai mật khẩu");
+           }
+
+           if (!user.isStatus()) {
+               throw new Exception("Tài khoản da bi khoa");
+           }
+
+           String token = JwtService.createTokenUser(user);
+           JedisPool jedisPool = new JedisPool("localhost", 6379);
+           try (Jedis jedis = jedisPool.getResource()) {
+               jedis.set(String.valueOf(user.getId()), token);
+           }
+           jedisPool.close();
+
+           Map<String, Object> response = new HashMap<>();
+           response.put("message", "Đăng nhập thành công");
+           response.put("token", token);
+
+           return new ResponseEntity<>(response, HttpStatus.OK);
+
+       }catch (Exception e) {
+           return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+       }
+    }
+    @PostMapping("/authen")
+    public ResponseEntity<Object> authen(@RequestAttribute("data") UserModel user) {
+
+        try {
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+
+
 }
