@@ -1,19 +1,19 @@
 package com.ojt_server.modules.user.service;
 
+import com.ojt_server.modules.user.dto.RegisterDTO;
 import com.ojt_server.modules.user.model.Role;
+import com.ojt_server.modules.user.model.RoleName;
 import com.ojt_server.modules.user.model.UserModel;
 import com.ojt_server.modules.user.reqository.RoleRepository;
 import com.ojt_server.modules.user.reqository.UserRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserService {
@@ -82,5 +82,36 @@ public class UserService {
             throw new RuntimeException("User not found with id: " + id);
         }
     }
+
+    //đăng ký tài khoản
+    public UserModel register(RegisterDTO registerDTO) {
+        UserModel user = new UserModel();
+        BeanUtils.copyProperties(registerDTO, user);
+        user.setRoles(new HashSet<>());
+        Role userRole = roleRepository.findByRoleName(RoleName.ROLE_USER);
+        if (userRole != null) {
+            user.getRoles().add(userRole);
+        }
+
+        // Set createdAt to current date
+        user.setCreatedAt(new Date());
+
+
+        return userRepository.save(user);
+    }
+
+
+    public UserModel activate(Long userId) {
+        Optional<UserModel> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            UserModel user = optionalUser.get();
+            user.setStatus(true); // Set status to true to indicate the account is activated
+            userRepository.save(user);
+            return user;
+        }
+        return null;
+    }
+
+
 
 }
