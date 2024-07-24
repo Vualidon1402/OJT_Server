@@ -2,6 +2,7 @@ package com.ojt_server.modules.product;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.ojt_server.modules.brand.BrandModel;
 import com.ojt_server.modules.category.CategoryModel;
 import com.ojt_server.modules.comment.CommentModel;
@@ -11,7 +12,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @NoArgsConstructor
@@ -29,7 +30,7 @@ public class ProductModel {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "created_at")
-    private Date createdAt;
+    private Date createdAt = new Date();
 
     @Column(name = "description", length = 255)
     private String description;
@@ -48,7 +49,7 @@ public class ProductModel {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "update_at")
-    private Date updatedAt;
+    private Date updatedAt = new Date();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")
@@ -61,13 +62,14 @@ public class ProductModel {
     private CategoryModel category;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<ImageModel> images;
+    private List<ImageModel> images;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<CommentModel> comments;
+    private List<CommentModel> comments;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<ProductDetailModel> productDetails;
+    @JsonManagedReference
+    private List<ProductDetailModel> productDetails;
 
     @Override
     public String toString() {

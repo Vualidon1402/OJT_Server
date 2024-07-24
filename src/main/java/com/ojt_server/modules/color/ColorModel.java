@@ -20,4 +20,9 @@ public class ColorModel {
 
     @Column(name = "status")
     private boolean status = true;
+
+    @Override
+    public String toString() {
+        return "id: " + id + ", colorName: " + colorName + ", status: " + status;
+    }
 }
