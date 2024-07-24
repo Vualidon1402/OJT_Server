@@ -13,6 +13,7 @@ import lombok.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @NoArgsConstructor
@@ -42,7 +43,7 @@ public class ProductModel {
     private String productName;
 
     @Column(name = "sku", length = 255)
-    private String sku;
+    private String sku ;
 
     @Column(name = "status", nullable = false)
     private boolean status = true;

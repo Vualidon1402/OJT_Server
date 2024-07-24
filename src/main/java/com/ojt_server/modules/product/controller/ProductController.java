@@ -25,4 +25,18 @@ public class ProductController {
     public ProductModel addProduct(@RequestBody ProductModelDTO product) {
         return productService.createProduct(product);
     }
+
+    //Update product
+    @PutMapping("/update")
+    public ProductModel updateProduct(@RequestBody ProductModelDTO product) {
+        return productService.updateProduct(product);
+    }
+
+    //Delete product
+
+    //find product by id
+    @GetMapping("/get/{id}")
+    public ProductModel getProductById(@PathVariable Long id) {
+        return productService.getProductById(id);
+    }
 }

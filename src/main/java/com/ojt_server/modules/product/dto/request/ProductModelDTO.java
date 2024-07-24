@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.List;
 
 @AllArgsConstructor
@@ -18,6 +19,8 @@ public class ProductModelDTO {
     private String description;
     private String image;
     private String sku;
+    private boolean status;
+    private Date updatedAt;
     private Long categoryId;
     private Long brandId;
     private List<String> images;
