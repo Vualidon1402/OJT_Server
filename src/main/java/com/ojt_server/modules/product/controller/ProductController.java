@@ -32,7 +32,11 @@ public class ProductController {
         return productService.updateProduct(product);
     }
 
-    //Delete product
+    // Update category status instead of deleting
+    @DeleteMapping("/delete/{id}")
+    public void deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+    }
 
     //find product by id
     @GetMapping("/get/{id}")

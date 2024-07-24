@@ -111,5 +111,12 @@ public class ProductService {
         return productRepository.findById(productId).orElse(null);
     }
 
+    // Update category status instead of deleting
+    public ProductModel deleteProduct(Long productId) {
+        ProductModel product = productRepository.findById(productId)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        product.setStatus(false);
+        return productRepository.save(product);
+    }
 
 }
