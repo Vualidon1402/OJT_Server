@@ -12,7 +12,7 @@ import redis.clients.jedis.JedisPool;
 public class AuthenInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
+        System.out.println("preHandle");
         // Thực thi trước khi request vào controller
         if (request.getMethod().equals("OPTIONS")) {
             return true;

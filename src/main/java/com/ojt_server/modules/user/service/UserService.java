@@ -1,11 +1,15 @@
 package com.ojt_server.modules.user.service;
 
+import com.ojt_server.modules.address.Address;
+import com.ojt_server.modules.address.repository.AddressRepository;
 import com.ojt_server.modules.user.dto.RegisterDTO;
+import com.ojt_server.modules.user.dto.UploadUserDTO;
 import com.ojt_server.modules.user.model.Role;
 import com.ojt_server.modules.user.model.RoleName;
 import com.ojt_server.modules.user.model.UserModel;
 import com.ojt_server.modules.user.reqository.RoleRepository;
 import com.ojt_server.modules.user.reqository.UserRepository;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +25,9 @@ public class UserService {
     private UserRepository userRepository;
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private AddressRepository addressRepository;
 
 
     public UserModel findUserByInfor(String loginId){
@@ -97,11 +104,18 @@ public class UserService {
             user.getRoles().add(userRole);
         }
 
+        // Save the user and get the new user's id
+        user = userRepository.save(user);
+        // Create a new address for the new user
+        Address address = new Address();
+        address.setUserId(user);
+        // Set other properties of the address as needed
+        // Save the address to the database
+        addressRepository.save(address);
+
         // Set createdAt to current date
         user.setCreatedAt(new Date());
-
-
-        return userRepository.save(user);
+        return user;
     }
 
 
@@ -115,6 +129,39 @@ public class UserService {
         }
         return null;
     }
+
+    //lấy mật khẩu cũ để so sánh rồi thanh đổi mật khẩu mới
+    public UserModel changePassword(Long id, String oldPassword, String newPassword) {
+        Optional<UserModel> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            UserModel user = optionalUser.get();
+            if (BCrypt.checkpw(oldPassword, user.getPassword())) {
+                user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
+                return userRepository.save(user);
+            } else {
+                throw new IllegalArgumentException("Sai Mật Khẩu");
+            }
+        } else {
+            throw new NoSuchElementException("User not found with id: " + id);
+        }
+    }
+
+    //chinhr sửa thông tin ueser
+    public UserModel update(Long id, UploadUserDTO userDto) {
+        Optional<UserModel> optionalUser = userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            UserModel existingUser = optionalUser.get();
+            existingUser.setFullName(userDto.getFullName());
+            existingUser.setEmail(userDto.getEmail());
+            existingUser.setPhone(userDto.getPhone());
+            // Assuming UserModel has a field named 'avatar'
+            existingUser.setAvatar(userDto.getAvatar());
+            return userRepository.save(existingUser);
+        } else {
+            throw new NoSuchElementException("User not found with id: " + id);
+        }
+    }
+
 
 
 

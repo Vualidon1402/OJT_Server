@@ -3,6 +3,7 @@ package com.ojt_server.modules.user.controller;
 import com.ojt_server.modules.user.dto.LoginDTO;
 import com.ojt_server.modules.user.dto.OtpVerificationDTO;
 import com.ojt_server.modules.user.dto.RegisterDTO;
+import com.ojt_server.modules.user.dto.UploadUserDTO;
 import com.ojt_server.modules.user.email.CreateRespone;
 import com.ojt_server.modules.user.email.EmailService;
 import com.ojt_server.modules.user.email.OtpService;
@@ -169,18 +170,15 @@ public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerD
     //đăng nhập tài khoản
     @PostMapping("/login")
     public ResponseEntity<Object> login(@Valid @RequestBody LoginDTO data){
-        System.out.println("data: " + data);
+
        try{
            UserModel user = userService.findUserByInfor(data.getLoginId());
-           System.out.println("user: " + user);
-
            if (user == null) {
                throw new Exception("Tài khoản không tồn tại");
            }
            if (!BCrypt.checkpw(data.getPassword(), user.getPassword())) {
                throw new Exception("Sai mật khẩu");
            }
-
            if (!user.isStatus()) {
                throw new Exception("Tài khoản da bi khoa");
            }
@@ -191,6 +189,7 @@ public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerD
                jedis.set(String.valueOf(user.getId()), token);
            }
            jedisPool.close();
+
 
            Map<String, Object> response = new HashMap<>();
            response.put("message", "Đăng nhập thành công");
@@ -207,6 +206,38 @@ public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerD
 
         try {
             return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //lấy mật khẩu cũ để so sánh rồi thanh đổi mật khẩu mới
+    @PutMapping("/changePassword/{id}")
+    public ResponseEntity<Object> changePassword(@PathVariable Long id, @RequestBody Map<String, String> data) {
+        System.out.println("data:ffffffffffffffff " + data);
+        try {
+            UserModel user = userService.changePassword(id, data.get("oldPassword"), data.get("newPassword"));
+            System.out.println("user: " + user);
+            if (user != null) {
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("User not found with id: " + id, HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    //chinhr sửa thông tin ueser
+    @PutMapping("/updateUser/{id}")
+    public ResponseEntity<Object> updateProfile(@PathVariable Long id, @RequestBody UploadUserDTO userDto) {
+        try {
+            UserModel updatedUser = userService.update(id, userDto);
+            if (updatedUser != null) {
+                return new ResponseEntity<>(updatedUser, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("User not found with id: " + id, HttpStatus.NOT_FOUND);
+            }
         } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
         }
