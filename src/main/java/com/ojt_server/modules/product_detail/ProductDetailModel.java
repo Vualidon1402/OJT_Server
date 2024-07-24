@@ -1,5 +1,8 @@
 package com.ojt_server.modules.product_detail;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.ojt_server.modules.config.ConfigModel;
 import com.ojt_server.modules.product.ProductModel;
 import com.ojt_server.modules.color.ColorModel;
 import jakarta.persistence.*;
@@ -23,7 +26,7 @@ public class ProductDetailModel {
     @Column(name = "product_detail_name", length = 255)
     private String productDetailName;
 
-    @Column(name = "status", nullable = false)
+    @Column(name = "status")
     private boolean status = true;
 
     @Column(name = "stock", nullable = false, columnDefinition = "INT(11)")
@@ -33,11 +36,19 @@ public class ProductDetailModel {
     private double unitPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "color_id")
     private ColorModel color;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @JoinColumn(name = "config_id")
+    private ConfigModel config;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "product_id")
+    @JsonBackReference
     private ProductModel product;
 
     @Override

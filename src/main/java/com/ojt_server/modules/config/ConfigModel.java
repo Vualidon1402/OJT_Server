@@ -1,5 +1,6 @@
 package com.ojt_server.modules.config;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ojt_server.modules.product_detail.ProductDetailModel;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,7 +23,8 @@ public class ConfigModel {
     @Column(name = "status")
     private boolean status = true;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_detail_id")
-    private ProductDetailModel productDetail;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//    @JoinColumn(name = "product_detail_id")
+//    private ProductDetailModel productDetail;
 }

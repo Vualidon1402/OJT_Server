@@ -1,5 +1,6 @@
 package com.ojt_server.modules.image;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.ojt_server.modules.product.ProductModel;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,6 +22,7 @@ public class ImageModel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
+    @JsonBackReference
     private ProductModel product;
 }
 

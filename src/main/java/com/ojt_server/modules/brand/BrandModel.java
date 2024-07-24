@@ -21,7 +21,7 @@ public class BrandModel {
     private String brandName;
 
     @Column(name = "created_at")
-    private Date createdAt;
+    private Date createdAt = new Date();
 
     @Column(name = "description", length = 255)
     private String description;

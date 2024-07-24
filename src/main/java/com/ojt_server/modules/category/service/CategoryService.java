@@ -45,8 +45,8 @@ public class CategoryService {
     public void deleteCategory(Long id) {
         try {
             categoryRepository.findById(id).ifPresent(category -> {
-                category.setStatus(false); // Set status to false
-                categoryRepository.save(category); // Save the updated category
+                category.setStatus(false);
+                categoryRepository.save(category);
             });
         } catch (Exception e) {
             e.printStackTrace();
