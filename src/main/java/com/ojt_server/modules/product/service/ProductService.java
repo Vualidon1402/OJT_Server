@@ -12,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -46,7 +48,8 @@ public class ProductService {
         product.setProductName(productDto.getProductName());
         product.setDescription(productDto.getDescription());
         product.setImage(productDto.getImage());
-        product.setSku(productDto.getSku());
+        product.setUpdatedAt(new Date());
+        product.setSku(UUID.randomUUID().toString().substring(0, 8).toUpperCase());
         product.setCategory(categoryRepository.findById(productDto.getCategoryId())
                 .orElseThrow(() -> new RuntimeException("Category not found")));
         product.setBrand(brandRepository.findById(productDto.getBrandId())
@@ -71,5 +74,42 @@ public class ProductService {
 
         return savedProduct;
     }
+
+    public ProductModel updateProduct(ProductModelDTO productDto) {
+        ProductModel product = productRepository.findById(productDto.getId())
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        product.setProductName(productDto.getProductName());
+        product.setDescription(productDto.getDescription());
+        product.setImage(productDto.getImage());
+        product.setSku(productDto.getSku());
+        product.setUpdatedAt(new Date());
+        product.setStatus(productDto.isStatus());
+        product.setCategory(categoryRepository.findById(productDto.getCategoryId())
+                .orElseThrow(() -> new RuntimeException("Category not found")));
+        product.setBrand(brandRepository.findById(productDto.getBrandId())
+                .orElseThrow(() -> new RuntimeException("Brand not found")));
+
+        imageRepository.deleteAll(product.getImages());
+
+        List<ImageModel> newImages = productDto.getImages().stream()
+                .map(src -> {
+                    ImageModel img = new ImageModel();
+                    img.setSrc(src);
+                    img.setProduct(product);
+                    return img;
+                })
+                .collect(Collectors.toList());
+
+        newImages = imageRepository.saveAll(newImages);
+        product.setImages(newImages);
+
+        return productRepository.save(product);
+    }
+
+    //find product by productId
+    public ProductModel getProductById(Long productId) {
+        return productRepository.findById(productId).orElse(null);
+    }
+
 
 }
