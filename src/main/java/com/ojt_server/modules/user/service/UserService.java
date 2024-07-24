@@ -151,16 +151,20 @@ public class UserService {
         Optional<UserModel> optionalUser = userRepository.findById(id);
         if (optionalUser.isPresent()) {
             UserModel existingUser = optionalUser.get();
+            existingUser.setUsername(userDto.getUserName());
             existingUser.setFullName(userDto.getFullName());
             existingUser.setEmail(userDto.getEmail());
             existingUser.setPhone(userDto.getPhone());
             // Assuming UserModel has a field named 'avatar'
             existingUser.setAvatar(userDto.getAvatar());
+            existingUser.setUpdatedAt(new Date());
             return userRepository.save(existingUser);
         } else {
             throw new NoSuchElementException("User not found with id: " + id);
         }
     }
+
+
 
 
 

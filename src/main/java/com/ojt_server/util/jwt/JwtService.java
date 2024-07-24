@@ -77,10 +77,10 @@ public class JwtService {
             String email = jwt.getClaim("email").asString();
             user.setEmail(email);
 
-            String fullName = jwt.getClaim("full_name").asString();
+            String fullName = jwt.getClaim("fullName").asString();
             user.setFullName(fullName);
 
-            Boolean isDeleted = Boolean.valueOf(jwt.getClaim("is_deleted").asString());
+            Boolean isDeleted = Boolean.valueOf(jwt.getClaim("isDeleted").asString());
             user.setDeleted(isDeleted);
 
             String phone = jwt.getClaim("phone").asString();
