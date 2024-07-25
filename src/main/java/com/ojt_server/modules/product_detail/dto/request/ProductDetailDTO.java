@@ -23,6 +23,8 @@ public class ProductDetailDTO {
     @NotBlank(message = "status is required")
     private double unitPrice;
 
+    private boolean status;
+
     private Long colorId;
 
     private Long productId;
