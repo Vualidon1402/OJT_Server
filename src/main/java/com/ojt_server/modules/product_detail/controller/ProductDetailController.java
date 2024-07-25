@@ -25,4 +25,29 @@ public class ProductDetailController {
     public ProductDetailModel addProductDetail(@RequestBody ProductDetailDTO productDetailDTO) {
         return productDetailService.createProductDetail(productDetailDTO);
     }
+
+    //findByProductId
+    @GetMapping("/findByProductId/{productId}")
+    public List<ProductDetailModel> findByProductId(@PathVariable Long productId) {
+        System.out.println("productId: " + productId);
+        return productDetailService.findProductDetailsByProductId(productId);
+    }
+
+    //find product detail by product detail id
+    @GetMapping("/findById/{id}")
+    public ProductDetailModel findProductDetailById(@PathVariable Long id) {
+        return productDetailService.findProductDetailById(id);
+    }
+
+    // update product detail
+    @PutMapping("/update")
+    public ProductDetailModel updateProductDetail(@RequestBody ProductDetailDTO productDetailDTO) {
+        return productDetailService.updateProductDetail(productDetailDTO);
+    }
+
+    // Update product detail status instead of deleting
+    @DeleteMapping("/delete/{id}")
+    public ProductDetailModel deleteProductDetail(@PathVariable Long id) {
+        return productDetailService.deleteProductDetail(id);
+    }
 }

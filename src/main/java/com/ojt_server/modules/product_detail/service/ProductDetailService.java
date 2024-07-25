@@ -2,6 +2,7 @@ package com.ojt_server.modules.product_detail.service;
 
 import com.ojt_server.modules.color.repository.ColorRepository;
 import com.ojt_server.modules.config.repository.ConfigRepository;
+import com.ojt_server.modules.product.ProductModel;
 import com.ojt_server.modules.product.repository.ProductRepository;
 import com.ojt_server.modules.product_detail.ProductDetailModel;
 import com.ojt_server.modules.product_detail.dto.request.ProductDetailDTO;
@@ -50,19 +51,38 @@ public class ProductDetailService {
     }
 
     // Update product detail
-    public ProductDetailModel updateProductDetail(Long id, ProductDetailDTO productDetailDTO) {
-        ProductDetailModel detail = productDetailRepository.findById(id)
+    public ProductDetailModel updateProductDetail(ProductDetailDTO productDetailDTO) {
+        ProductDetailModel detail = productDetailRepository.findById(productDetailDTO.getId())
                 .orElseThrow(() -> new RuntimeException("Product detail not found"));
         detail.setImage(productDetailDTO.getImage());
         detail.setProductDetailName(productDetailDTO.getProductDetailName());
         detail.setStock(productDetailDTO.getStock());
         detail.setUnitPrice(productDetailDTO.getUnitPrice());
+        detail.setStatus(productDetailDTO.isStatus());
         detail.setColor(colorRepository.findById(productDetailDTO.getColorId())
                 .orElseThrow(() -> new RuntimeException("Color not found")));
-        detail.setProduct(productRepository.findById(productDetailDTO.getProductId())
-                .orElseThrow(() -> new RuntimeException("Product not found")));
         detail.setConfig(configRepository.findById(productDetailDTO.getConfigId())
-                .orElseThrow(() -> new RuntimeException("Product not found")));
+                .orElseThrow(() -> new RuntimeException("Config not found")));
         return productDetailRepository.save(detail);
     }
+
+    //find product details by product id
+    public List<ProductDetailModel> findProductDetailsByProductId(Long productId) {
+        return productDetailRepository.findByProductId(productId);
+    }
+
+    //find product detail by product detail id
+    public ProductDetailModel findProductDetailByProductDetailId(Long productDetailId) {
+        return productDetailRepository.findById(productDetailId)
+                .orElseThrow(() -> new RuntimeException("Product detail not found"));
+    }
+
+    // Update product detail status instead of deleting
+    public ProductDetailModel deleteProductDetail(Long productDetailId) {
+        ProductDetailModel productDetail = productDetailRepository.findById(productDetailId)
+                .orElseThrow(() -> new RuntimeException("Product Detail not found"));
+        productDetail.setStatus(false);
+        return productDetailRepository.save(productDetail);
+    }
+
 }
