@@ -1,6 +1,7 @@
-package com.ojt_server.modules.wish_list;
+package com.ojt_server.modules.wish_list.model;
 
 import com.ojt_server.modules.product.ProductModel;
+import com.ojt_server.modules.user.model.UserModel;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -25,6 +26,8 @@ public class WishListModel {
     @JoinColumn(name = "product_id")
     private ProductModel product;
 
-    @Column(name = "user_id")
-    private Long userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserModel user;
 }

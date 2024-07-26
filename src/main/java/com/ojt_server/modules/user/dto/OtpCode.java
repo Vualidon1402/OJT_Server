@@ -20,4 +20,10 @@ public class OtpCode {
         this.otp = otp;
         this.creationTime = LocalDateTime.now();
     }
+    public int getOtp() {
+        return otp;
+    }
+    public LocalDateTime getCreationTime() {
+        return creationTime;
+    }
 }

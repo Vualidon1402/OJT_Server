@@ -66,8 +66,10 @@ public class UserService {
                 break;
             case "abc":
             case "asc":
+
             default:
                 sort = Sort.by(Sort.Direction.ASC, "username");
+
         }
         return userRepository.findAll(sort);
     }
@@ -116,6 +118,7 @@ public class UserService {
 
         // Set createdAt to current date
         user.setCreatedAt(new Date());
+        user = userRepository.save(user);
         return user;
     }
 
@@ -163,6 +166,12 @@ public class UserService {
         } else {
             throw new NoSuchElementException("User not found with id: " + id);
         }
+    }
+
+    //theo id
+    public UserModel findUserById(Long id) {
+        Optional<UserModel> optionalUser = userRepository.findById(id);
+        return optionalUser.orElse(null);
     }
 
 

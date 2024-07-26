@@ -23,4 +23,16 @@ public class OtpService {
             return LocalDateTime.now().isBefore(otpCode.getCreationTime().plusMinutes(1));
         }
         return false;  }
+    public String getOtpErrorMessage(Long userId, int otp) {
+        OtpCode otpCode = otps.get(userId);
+        if (otpCode == null) {
+            return "No OTP found for the given user ID";
+        } else if (otpCode.getOtp() != otp) {
+            return "OTP không đúng";
+        } else if (LocalDateTime.now().isAfter(otpCode.getCreationTime().plusMinutes(2))) {
+            return "OTP hết hạn";
+        } else {
+            return "Unknown error";
+        }
+    }
 }
