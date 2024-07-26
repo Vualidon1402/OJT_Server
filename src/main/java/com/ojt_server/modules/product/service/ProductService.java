@@ -124,4 +124,9 @@ public class ProductService {
         return productRepository.findByStatus(status);
     }
 
+    //Relative product search
+    public List<ProductModel> searchProduct(String productName) {
+        return productRepository.findByProductNameContaining(productName);
+    }
+
 }

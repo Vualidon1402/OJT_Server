@@ -12,4 +12,7 @@ public interface ProductRepository extends JpaRepository<ProductModel, Long> {
 
     boolean existsByProductName(String productName);
 
+    //Relative product search
+    List<ProductModel> findByProductNameContaining(String productName);
+
 }

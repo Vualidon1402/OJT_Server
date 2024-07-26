@@ -50,5 +50,11 @@ public class ProductController {
     public List<ProductModel> getProductByStatus(@PathVariable boolean status) {
         return productService.findProductByStatus(status);
     }
+
+    //Relative product search
+    @GetMapping("/search/{productName}")
+    public List<ProductModel> searchProduct(@PathVariable String productName) {
+        return productService.searchProduct(productName);
+    }
 }
 
