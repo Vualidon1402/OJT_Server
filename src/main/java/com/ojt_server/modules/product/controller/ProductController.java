@@ -3,6 +3,7 @@ package com.ojt_server.modules.product.controller;
 import com.ojt_server.modules.product.ProductModel;
 import com.ojt_server.modules.product.dto.request.ProductModelDTO;
 import com.ojt_server.modules.product.service.ProductService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +23,7 @@ public class ProductController {
 
     //Add new product
     @PostMapping("/add")
-    public ProductModel addProduct(@RequestBody ProductModelDTO product) {
+    public ProductModel addProduct(@Valid @RequestBody ProductModelDTO product) {
         return productService.createProduct(product);
     }
 
@@ -43,4 +44,11 @@ public class ProductController {
     public ProductModel getProductById(@PathVariable Long id) {
         return productService.getProductById(id);
     }
+
+    //find product by status
+    @GetMapping("/getByStatus/{status}")
+    public List<ProductModel> getProductByStatus(@PathVariable boolean status) {
+        return productService.findProductByStatus(status);
+    }
 }
+

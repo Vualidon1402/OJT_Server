@@ -72,6 +72,7 @@ public class UserService {
         return userRepository.findAll(sort);
     }
 
+
     // phân trang user
     public Page<UserModel> findUsers(int page, int size) {
         return userRepository.findAll(PageRequest.of(page, size));

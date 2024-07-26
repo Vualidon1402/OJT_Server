@@ -1,6 +1,7 @@
 package com.ojt_server.modules.category.service;
 
 import com.ojt_server.modules.category.CategoryModel;
+import com.ojt_server.modules.category.dto.request.CategoryModelDTO;
 import com.ojt_server.modules.category.repository.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,13 @@ public class CategoryService {
     }
 
     // Add new category
-    public CategoryModel addCategory(CategoryModel category) {
+    public CategoryModel addCategory(CategoryModelDTO categoryDto) {
         try {
+            CategoryModel category = new CategoryModel();
+            category.setImage(categoryDto.getImage());
+            category.setDescription(categoryDto.getDescription());
+            category.setCategoryName(categoryDto.getCategoryName());
+            category.setStatus(categoryDto.isStatus());
             return categoryRepository.save(category);
         } catch (Exception e) {
             e.printStackTrace();
@@ -32,9 +38,15 @@ public class CategoryService {
     }
 
     // Update category
-    public CategoryModel updateCategory(CategoryModel category) {
+    public CategoryModel updateCategory(CategoryModelDTO categoryDto) {
         try {
-            return categoryRepository.save(category);
+            return categoryRepository.findById(categoryDto.getId()).map(category -> {
+                category.setImage(categoryDto.getImage());
+                category.setDescription(categoryDto.getDescription());
+                category.setCategoryName(categoryDto.getCategoryName());
+                category.setStatus(categoryDto.isStatus());
+                return categoryRepository.save(category);
+            }).orElse(null);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
