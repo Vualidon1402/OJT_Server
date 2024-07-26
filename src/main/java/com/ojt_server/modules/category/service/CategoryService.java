@@ -64,4 +64,17 @@ public class CategoryService {
             e.printStackTrace();
         }
     }
+
+    //hiện thị danh mục với trạng thái mặc đinh là true
+    public List<CategoryModel> findCategoryByStatus(boolean status) {
+        try {
+            return categoryRepository.findByStatus(status);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+
 }

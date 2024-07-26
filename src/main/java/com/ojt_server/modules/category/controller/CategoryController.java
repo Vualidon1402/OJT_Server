@@ -4,6 +4,7 @@ import com.ojt_server.modules.category.CategoryModel;
 import com.ojt_server.modules.category.dto.request.CategoryModelDTO;
 import com.ojt_server.modules.category.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,5 +39,18 @@ public class CategoryController {
     public void deleteCategory(@PathVariable Long id){
         categoryService.deleteCategory(id);
     }
+
+    //hiện thị danh mục với trạng thái mặc đinh là true
+    @GetMapping("/getByStatus")
+    public ResponseEntity<List<CategoryModel>> getCategoryByStatus(@RequestParam(defaultValue = "true") boolean status) {
+        try{
+            return ResponseEntity.ok(categoryService.findCategoryByStatus(status));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+
 
 }

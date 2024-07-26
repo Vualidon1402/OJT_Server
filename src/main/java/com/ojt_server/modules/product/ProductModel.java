@@ -68,7 +68,7 @@ public class ProductModel {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<CommentModel> comments;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "product")
     @JsonManagedReference
     private List<ProductDetailModel> productDetails;
 

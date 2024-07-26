@@ -22,6 +22,9 @@ public interface ProductRepository extends JpaRepository<ProductModel, Long> {
 
 
     //hiện thi sản phẩm với 8 sản phẩm mới nhất
-    List<ProductModel> findTop8ByOrderByCreatedAtDesc();
+    List<ProductModel> findTop8ByStatusOrderByCreatedAtDesc(boolean status);
+
+    //lấy danh sách sản phẩm theo danh mục vơi status là true
+    List<ProductModel> findByCategory_IdAndStatus(Long categoryId, boolean status);
 
 }

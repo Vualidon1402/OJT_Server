@@ -66,10 +66,18 @@ public class ProductController {
     }
     //hiện thi sản phẩm với 8 sản phẩm mới nhất
     @GetMapping("/getTop8")
-    public ResponseEntity<List<ProductModel>> getTop8Product() {
+    public ResponseEntity<List<ProductModel>> getTop8Product(@RequestParam(defaultValue = "true") boolean status) {
         try{
-            return ResponseEntity.ok(productService.findNewProduct());
-
+            return ResponseEntity.ok(productService.findNewProduct(status));
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(null);
+        }
+    }
+    //lấy danh sách sản phẩm theo danh mục vơi status là true
+    @GetMapping("/getByCategory/{categoryId}")
+    public ResponseEntity<List<ProductModel>> getProductByCategory(@PathVariable Long categoryId) {
+        try{
+            return ResponseEntity.ok(productService.findProductByCategory(categoryId, true));
         }catch (Exception e){
             return ResponseEntity.badRequest().body(null);
         }
