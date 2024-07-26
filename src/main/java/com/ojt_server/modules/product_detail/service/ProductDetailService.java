@@ -7,11 +7,13 @@ import com.ojt_server.modules.product.repository.ProductRepository;
 import com.ojt_server.modules.product_detail.ProductDetailModel;
 import com.ojt_server.modules.product_detail.dto.request.ProductDetailDTO;
 import com.ojt_server.modules.product_detail.repository.ProductDetailRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Transactional
 @Service
 public class ProductDetailService {
     @Autowired

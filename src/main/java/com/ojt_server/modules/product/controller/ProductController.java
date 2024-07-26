@@ -5,6 +5,7 @@ import com.ojt_server.modules.product.dto.request.ProductModelDTO;
 import com.ojt_server.modules.product.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,15 +47,21 @@ public class ProductController {
     }
 
     //find product by status
-    @GetMapping("/getByStatus/{status}")
-    public List<ProductModel> getProductByStatus(@PathVariable boolean status) {
-        return productService.findProductByStatus(status);
+    @GetMapping("/getByStatus/{status}/{page}/{size}")
+    public Page<ProductModel> getProductByStatus(@PathVariable boolean status, @PathVariable int page, @PathVariable int size) {
+        return productService.findProductByStatus(status, page, size);
     }
 
     //Relative product search
     @GetMapping("/search/{productName}")
     public List<ProductModel> searchProduct(@PathVariable String productName) {
         return productService.searchProduct(productName);
+    }
+
+    //Pagination product
+    @GetMapping("/pagination/{page}/{size}")
+    public Page<ProductModel> paginationProduct(@PathVariable int page, @PathVariable int size) {
+        return productService.paginationProduct(page, size);
     }
 }
 
