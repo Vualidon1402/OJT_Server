@@ -19,8 +19,10 @@ public interface UserRepository extends JpaRepository<UserModel ,Long> {
     @Query(value = "SELECT * FROM users WHERE username = :loginId or (email = :loginId and is_deleted = true)", nativeQuery = true)
     UserModel findUserByInfor(@Param("loginId") String loginId);
 
-//    SELECT * FROM users
-//    WHERE username = "thienpxc@gmail.com"
-//    OR (email = "thienpxc@gmail.com" AND is_deleted = 0)
+    UserModel findByEmail(String email);
+
+
+
+
 
 }

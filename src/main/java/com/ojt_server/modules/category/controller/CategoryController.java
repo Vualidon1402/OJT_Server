@@ -21,8 +21,10 @@ public class CategoryController {
 
     // Add new category
     @PostMapping("/add")
+
     public CategoryModel addCategory(@RequestBody CategoryModelDTO categoryDto){
         return categoryService.addCategory(categoryDto);
+
     }
 
     // Update category

@@ -139,7 +139,7 @@ public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerD
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while sending OTP");
             }
             otpService.storeOtp(createRespone.getData().getId(), otp);
-            return ResponseEntity.ok("Đăng ký thành công");
+            return ResponseEntity.ok(user.getId());
         }
         return new ResponseEntity<>("Registration failed", HttpStatus.BAD_REQUEST);
     }catch (Exception e){
@@ -152,16 +152,39 @@ public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerD
     public ResponseEntity<Object> activateAccount(@RequestBody OtpVerificationDTO otpVerificationDTO) {
         try {
             boolean isOtpValid = otpService.verifyOtp(otpVerificationDTO.getUserId(), otpVerificationDTO.getOtp());
-            if (isOtpValid) {
-                UserModel user = userService.activate(otpVerificationDTO.getUserId());
-                if (user != null) {
-                    return new ResponseEntity<>(user, HttpStatus.OK);
-                } else {
-                    return new ResponseEntity<>("User not found with id: " + otpVerificationDTO.getUserId(), HttpStatus.NOT_FOUND);
-                }
-            } else {
-                return new ResponseEntity<>("Invalid OTP", HttpStatus.BAD_REQUEST);
+            if (!isOtpValid) {
+                String errorMessage = otpService.getOtpErrorMessage(otpVerificationDTO.getUserId(), otpVerificationDTO.getOtp());
+                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
             }
+            UserModel user = userService.activate(otpVerificationDTO.getUserId());
+            if (user != null) {
+                return new ResponseEntity<>(user, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("User not found with id: " + otpVerificationDTO.getUserId(), HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+        }
+    }
+    //nhận lại mã otp khi khách hàng yêu cầu
+    @PostMapping("/resendOtp")
+    public ResponseEntity<Object> resendOtp(@RequestBody OtpVerificationDTO otpVerificationDTO) {
+        try {
+            UserModel user = userService.findUserById(otpVerificationDTO.getUserId());
+            if (user == null) {
+                return new ResponseEntity<>("User not found with id: " + otpVerificationDTO.getUserId(), HttpStatus.NOT_FOUND);
+            }
+            String userEmail = user.getEmail();
+            Random random = new Random();
+            int otp = 100000 + random.nextInt(900000);
+            try {
+                emailService.sendOtpToUser(userEmail, otp);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while sending OTP");
+            }
+            otpService.storeOtp(otpVerificationDTO.getUserId(), otp);
+            return ResponseEntity.ok("OTP sent successfully");
         } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
         }
@@ -203,9 +226,37 @@ public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerD
     }
     @PostMapping("/authen")
     public ResponseEntity<Object> authen(@RequestAttribute("data") UserModel user) {
-
         try {
             return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PostMapping("/requestPasswordChangeOtp/{id}")
+    public ResponseEntity<Object> requestPasswordChangeOtp(@PathVariable Long id,@RequestBody Map<String, String> data) {
+        try {
+            UserModel user = userService.findUserById(id);
+            if (user == null) {
+                return new ResponseEntity<>("User not found with id: " + id, HttpStatus.NOT_FOUND);
+            }
+            // Get the old password from the request
+            String oldPassword = data.get("oldPassword");
+            // Check if the old password matches the current password
+            if (!BCrypt.checkpw(oldPassword, user.getPassword())) {
+                return new ResponseEntity<>("Mật khẩu cũ không đúng", HttpStatus.BAD_REQUEST);
+            }
+            String userEmail = user.getEmail();
+            Random random = new Random();
+            int otp = 100000 + random.nextInt(900000);
+            try {
+                emailService.sendOtpToUser(userEmail, otp);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error while sending OTP");
+            }
+            otpService.storeOtp(id, otp);
+            return ResponseEntity.ok("OTP sent successfully for password change");
         } catch (Exception e) {
             return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
         }
@@ -214,10 +265,25 @@ public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerD
     //lấy mật khẩu cũ để so sánh rồi thanh đổi mật khẩu mới
     @PutMapping("/changePassword/{id}")
     public ResponseEntity<Object> changePassword(@PathVariable Long id, @RequestBody Map<String, String> data) {
-        System.out.println("data:ffffffffffffffff " + data);
+
         try {
+            int otpValue;
+            try {
+                otpValue = Integer.parseInt(data.get("otp"));
+
+            } catch (NumberFormatException e) {
+                return new ResponseEntity<>("OTP không hợp lệ", HttpStatus.BAD_REQUEST);
+            }
+            // Xác minh OTP trước
+            boolean isOtpValid = otpService.verifyOtp(id, otpValue);
+
+            if (!isOtpValid) {
+                String errorMessage = otpService.getOtpErrorMessage(id, otpValue);
+                System.out.println("errorMessage: " + errorMessage);
+                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+            }
+            // Nếu OTP hợp lệ, tiếp tục thay đổi mật khẩu
             UserModel user = userService.changePassword(id, data.get("oldPassword"), data.get("newPassword"));
-            System.out.println("user: " + user);
             if (user != null) {
                 return new ResponseEntity<>(user, HttpStatus.OK);
             } else {
@@ -227,6 +293,7 @@ public ResponseEntity<Object> register(@Valid @RequestBody RegisterDTO registerD
             return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
         }
     }
+
 
     //chinhr sửa thông tin ueser
     @PutMapping("/updateUser/{id}")
