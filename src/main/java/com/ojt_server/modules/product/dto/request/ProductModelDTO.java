@@ -1,6 +1,8 @@
 package com.ojt_server.modules.product.dto.request;
 
 import com.ojt_server.modules.product_detail.dto.request.ProductDetailDTO;
+import com.ojt_server.validator.UniqueField;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +17,10 @@ import java.util.List;
 @Setter
 public class ProductModelDTO {
     private Long id;
+    @NotBlank(message = "Product name is required")
+    @UniqueField(fieldName = "productName", message = "Product name already exists")
     private String productName;
+    @NotBlank(message = "Description is required")
     private String description;
     private String image;
     private String sku;

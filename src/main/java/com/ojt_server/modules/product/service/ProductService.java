@@ -119,4 +119,14 @@ public class ProductService {
         return productRepository.save(product);
     }
 
+    //find product by status
+    public List<ProductModel> findProductByStatus(boolean status) {
+        return productRepository.findByStatus(status);
+    }
+
+    //Relative product search
+    public List<ProductModel> searchProduct(String productName) {
+        return productRepository.findByProductNameContaining(productName);
+    }
+
 }

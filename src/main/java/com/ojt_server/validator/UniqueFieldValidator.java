@@ -2,6 +2,7 @@ package com.ojt_server.validator;
 
 
 
+import com.ojt_server.modules.product.repository.ProductRepository;
 import com.ojt_server.modules.user.reqository.UserRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -12,6 +13,9 @@ import org.springframework.stereotype.Service;
 public class UniqueFieldValidator implements ConstraintValidator<UniqueField, String> {
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
 
     private String fieldName;
 
@@ -30,6 +34,7 @@ public class UniqueFieldValidator implements ConstraintValidator<UniqueField, St
             case "userName" -> !userRepository.existsByUsername(value);
             case "email" -> !userRepository.existsByEmail(value);
             case "phone" -> !userRepository.existsByPhone(value);
+            case "productName" -> !productRepository.existsByProductName(value);
 
 
             default -> throw new IllegalArgumentException("Invalid field name: " + fieldName);
