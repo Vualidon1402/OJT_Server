@@ -9,6 +9,8 @@ import com.ojt_server.modules.product.dto.request.ProductModelDTO;
 import com.ojt_server.modules.product.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -127,6 +129,11 @@ public class ProductService {
     //Relative product search
     public List<ProductModel> searchProduct(String productName) {
         return productRepository.findByProductNameContaining(productName);
+    }
+
+    //Panigation product
+    public Page<ProductModel> paginationProduct(int page, int size) {
+        return productRepository.findAll(PageRequest.of(page, size));
     }
 
 }

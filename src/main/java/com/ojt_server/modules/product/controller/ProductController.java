@@ -5,6 +5,7 @@ import com.ojt_server.modules.product.dto.request.ProductModelDTO;
 import com.ojt_server.modules.product.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -55,6 +56,12 @@ public class ProductController {
     @GetMapping("/search/{productName}")
     public List<ProductModel> searchProduct(@PathVariable String productName) {
         return productService.searchProduct(productName);
+    }
+
+    //Pagination product
+    @GetMapping("/pagination/{page}/{size}")
+    public Page<ProductModel> paginationProduct(@PathVariable int page, @PathVariable int size) {
+        return productService.paginationProduct(page, size);
     }
 }
 
