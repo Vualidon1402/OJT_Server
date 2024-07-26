@@ -12,6 +12,4 @@ public interface ProductDetailRepository extends JpaRepository<ProductDetailMode
 
     //findByProductId
     List<ProductDetailModel> findByProductId(Long productId);
-
-    Page<ProductModel> findByStatus(boolean status, Pageable pageable);
 }

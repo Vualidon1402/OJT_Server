@@ -47,9 +47,9 @@ public class ProductController {
     }
 
     //find product by status
-    @GetMapping("/getByStatus/{status}")
-    public List<ProductModel> getProductByStatus(@PathVariable boolean status) {
-        return productService.findProductByStatus(status);
+    @GetMapping("/getByStatus/{status}/{page}/{size}")
+    public Page<ProductModel> getProductByStatus(@PathVariable boolean status, @PathVariable int page, @PathVariable int size) {
+        return productService.findProductByStatus(status, page, size);
     }
 
     //Relative product search
