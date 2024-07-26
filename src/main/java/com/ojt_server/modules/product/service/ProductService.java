@@ -137,4 +137,8 @@ public class ProductService {
         Pageable pageable = PageRequest.of(page, size);
         return productRepository.findByStatus(status, pageable);
     }
+    //hiện thi sản phẩm với 8 sản phẩm mới nhất
+    public List<ProductModel> findNewProduct() {
+        return productRepository.findTop8ByOrderByCreatedAtDesc();
+    }
 }

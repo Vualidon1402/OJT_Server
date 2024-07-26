@@ -23,7 +23,14 @@ public class ProductDetailController {
     // add a product detail
     @PostMapping("/add")
     public ProductDetailModel addProductDetail(@RequestBody ProductDetailDTO productDetailDTO) {
-        return productDetailService.createProductDetail(productDetailDTO);
+        System.out.println("productDetailDTO: " + productDetailDTO);
+        try{
+            return productDetailService.createProductDetail(productDetailDTO);
+        }catch (Exception e){
+            System.out.println(e);
+            return null;
+        }
+
     }
 
     //findByProductId
