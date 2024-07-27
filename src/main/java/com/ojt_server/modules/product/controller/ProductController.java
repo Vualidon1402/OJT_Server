@@ -64,6 +64,7 @@ public class ProductController {
     public Page<ProductModel> paginationProduct(@PathVariable int page, @PathVariable int size) {
         return productService.paginationProduct(page, size);
     }
+
     //hiện thi sản phẩm với 8 sản phẩm mới nhất
     @GetMapping("/getTop8")
     public ResponseEntity<List<ProductModel>> getTop8Product(@RequestParam(defaultValue = "true") boolean status) {
@@ -76,11 +77,17 @@ public class ProductController {
     //lấy danh sách sản phẩm theo danh mục vơi status là true
     @GetMapping("/getByCategory/{categoryId}")
     public ResponseEntity<List<ProductModel>> getProductByCategory(@PathVariable Long categoryId) {
-        try{
+        try {
             return ResponseEntity.ok(productService.findProductByCategory(categoryId, true));
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(null);
         }
+    }
+
+    //find products with productDetail.discount != 0
+    @GetMapping("/discount")
+    public List<ProductModel> findProductDiscount() {
+        return productService.findProductsWithDiscount();
     }
 }
 
