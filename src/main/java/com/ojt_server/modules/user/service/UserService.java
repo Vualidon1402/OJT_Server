@@ -102,9 +102,9 @@ public class UserService {
         UserModel user = new UserModel();
         BeanUtils.copyProperties(registerDTO, user);
         user.setRoles(new HashSet<>());
-        Role userRole = roleRepository.findByRoleName(RoleName.ROLE_USER);
-        if (userRole != null) {
-            user.getRoles().add(userRole);
+        Optional<Role> userRoleOpt = roleRepository.findByRoleName(RoleName.ROLE_USER);
+        if (userRoleOpt.isPresent()) {
+            user.getRoles().add(userRoleOpt.get());
         }
 
         // Save the user and get the new user's id

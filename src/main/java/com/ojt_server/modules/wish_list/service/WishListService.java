@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class WishListService {
@@ -35,7 +36,13 @@ public class WishListService {
 
         // Kiểm tra xem sản phẩm đã có trong danh sách yêu thích chưa
         if (wishListRepository.existsByUserAndProduct(user, product)) {
-            throw new DuplicateWishListException("This product is already in the user's wish list");
+            // Nếu sản phẩm đã tồn tại, xóa sản phẩm khỏi danh sách yêu thích
+            Optional<WishListModel> optionalWishList = wishListRepository.findByUserAndProduct(user, product);
+            if (optionalWishList.isPresent()) {
+                WishListModel existingWishList = optionalWishList.get();
+                wishListRepository.delete(existingWishList);
+                return null;
+            }
         }
 
         WishListModel wishList = new WishListModel();
@@ -44,6 +51,24 @@ public class WishListService {
         wishList.setCreatedAt(new Date());
         return wishListRepository.save(wishList);
     }
+
+    //hiển thị danh sách yêu thích
+    public List<WishListModel> getWishList(Long userId) {
+        return wishListRepository.findAllByUser(userId);
+    }
+
+    //xóa sản phẩm khỏi danh sách yêu thích
+    public void removeWishList(Long productId) throws Exception {
+        Optional<WishListModel> optionalWishList = wishListRepository.findById(productId);
+        if (optionalWishList.isPresent()) {
+            // Nếu sản phẩm tồn tại, xóa sản phẩm khỏi danh sách yêu thích
+            WishListModel existingWishList = optionalWishList.get();
+            wishListRepository.delete(existingWishList);
+        } else {
+            throw new WishListNotFoundException("Product not found in wish list");
+        }
+    }
+
 
 
 }

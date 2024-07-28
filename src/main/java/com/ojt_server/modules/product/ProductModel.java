@@ -22,6 +22,7 @@ import java.util.UUID;
 @Setter
 @Builder
 @Table(name = "product")
+
 public class ProductModel {
 
     @Id
