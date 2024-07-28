@@ -2,7 +2,6 @@ package com.ojt_server.modules.product_detail.service;
 
 import com.ojt_server.modules.color.repository.ColorRepository;
 import com.ojt_server.modules.config.repository.ConfigRepository;
-import com.ojt_server.modules.product.ProductModel;
 import com.ojt_server.modules.product.repository.ProductRepository;
 import com.ojt_server.modules.product_detail.ProductDetailModel;
 import com.ojt_server.modules.product_detail.dto.request.ProductDetailDTO;
@@ -37,12 +36,13 @@ public class ProductDetailService {
         detail.setProductDetailName(productDetailDTO.getProductDetailName());
         detail.setStock(productDetailDTO.getStock());
         detail.setUnitPrice(productDetailDTO.getUnitPrice());
+        detail.setDiscount(productDetailDTO.getDiscount());
         detail.setColor(colorRepository.findById(productDetailDTO.getColorId())
                 .orElseThrow(() -> new RuntimeException("Color not found")));
         detail.setProduct(productRepository.findById(productDetailDTO.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found")));
         detail.setConfig(configRepository.findById(productDetailDTO.getConfigId())
-                .orElseThrow(() -> new RuntimeException("Product not found")));
+                .orElseThrow(() -> new RuntimeException("Config not found")));
         return productDetailRepository.save(detail);
     }
 
@@ -60,6 +60,7 @@ public class ProductDetailService {
         detail.setProductDetailName(productDetailDTO.getProductDetailName());
         detail.setStock(productDetailDTO.getStock());
         detail.setUnitPrice(productDetailDTO.getUnitPrice());
+        detail.setDiscount(productDetailDTO.getDiscount());
         detail.setStatus(productDetailDTO.isStatus());
         detail.setColor(colorRepository.findById(productDetailDTO.getColorId())
                 .orElseThrow(() -> new RuntimeException("Color not found")));
@@ -86,5 +87,4 @@ public class ProductDetailService {
         productDetail.setStatus(false);
         return productDetailRepository.save(productDetail);
     }
-
 }

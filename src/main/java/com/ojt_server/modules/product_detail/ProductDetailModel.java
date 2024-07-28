@@ -35,6 +35,12 @@ public class ProductDetailModel {
     @Column(name = "unit_price", nullable = false)
     private double unitPrice;
 
+    @Column(name = "discount")
+    private double discount;
+
+    @Column(name = "discount_price")
+    private double discountPrice;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     @JoinColumn(name = "color_id")
@@ -51,6 +57,12 @@ public class ProductDetailModel {
     @JsonBackReference
     private ProductModel product;
 
+    @PrePersist
+    @PreUpdate
+    private void calculateDiscountPrice() {
+        this.discountPrice = this.unitPrice * (100 - this.discount) / 100;
+    }
+
     @Override
     public String toString() {
         return "ProductDetailModel{" +
@@ -60,7 +72,10 @@ public class ProductDetailModel {
                 ", status=" + status +
                 ", stock=" + stock +
                 ", unitPrice=" + unitPrice +
+                ", discount=" + discount +
+                ", discountPrice=" + discountPrice +
                 ", color=" + color +
+                ", config=" + config +
                 ", product=" + product +
                 '}';
     }

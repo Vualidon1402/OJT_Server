@@ -145,4 +145,9 @@ public class ProductService {
     public List<ProductModel> findProductByCategory(Long categoryId, boolean status) {
         return productRepository.findByCategory_IdAndStatus(categoryId, status);
     }
+
+    //find products with productDetail.discount != 0
+    public List<ProductModel> findProductsWithDiscount() {
+        return productRepository.findProductsWithDiscount();
+    }
 }
