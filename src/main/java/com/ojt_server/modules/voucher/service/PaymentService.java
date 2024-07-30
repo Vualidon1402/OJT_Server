@@ -13,6 +13,9 @@ public class PaymentService {
 
     public double applyVoucher(String voucherCode, double totalAmount) {
         Voucher voucher = voucherService.getVoucherByCode(voucherCode);
+        if (voucher == null) {
+            throw new RuntimeException("Voucher does not exist");
+        }
 
         if (voucher != null && !voucher.isUsed() && LocalDate.now().isBefore(voucher.getExpirationDate())) {
             totalAmount -= voucher.getDiscountAmount();
@@ -22,4 +25,6 @@ public class PaymentService {
 
         return totalAmount;
     }
+
+
 }

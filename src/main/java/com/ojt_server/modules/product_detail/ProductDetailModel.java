@@ -63,6 +63,10 @@ public class ProductDetailModel {
         this.discountPrice = this.unitPrice * (100 - this.discount) / 100;
     }
 
+    public ProductDetailModel(Long id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "ProductDetailModel{" +

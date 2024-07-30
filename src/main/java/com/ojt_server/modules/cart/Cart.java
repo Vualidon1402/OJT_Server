@@ -1,6 +1,8 @@
-package com.ojt_server.modules.cartitem;
+package com.ojt_server.modules.cart;
+
 
 import com.ojt_server.modules.product_detail.ProductDetailModel;
+import com.ojt_server.modules.user.model.UserModel;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,8 +12,8 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-@Table(name = "cart_item")
-public class CartItemModel {
+@Table(name = "cart")
+public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,10 +21,12 @@ public class CartItemModel {
     @Column(name = "quantity", columnDefinition = "INT(11)")
     private int quantity;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "product_detail_id")
+    @ManyToOne
+    @JoinColumn(name = "productDetailId")
     private ProductDetailModel productDetail;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private UserModel user;
+
 }
