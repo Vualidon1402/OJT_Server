@@ -89,5 +89,11 @@ public class ProductController {
     public List<ProductModel> findProductDiscount() {
         return productService.findProductsWithDiscount();
     }
+
+    //find products by Category and pagination
+    @GetMapping("/getProductByCategory/{categoryId}/{page}/{size}")
+    public Page<ProductModel> findProductByCategory(@PathVariable Long categoryId, @RequestParam(defaultValue = "true") boolean status, @PathVariable int page, @PathVariable int size) {
+        return productService.findProductByCategory(categoryId, status, page, size);
+    }
 }
 

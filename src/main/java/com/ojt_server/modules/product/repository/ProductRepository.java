@@ -30,4 +30,7 @@ public interface ProductRepository extends JpaRepository<ProductModel, Long> {
     //find products with productDetail.discount != 0
     @Query("SELECT p FROM ProductModel p JOIN p.productDetails pd WHERE pd.discount != 0")
     List<ProductModel> findProductsWithDiscount();
+
+    //find products by Category and pagination
+    Page<ProductModel> findByCategory_IdAndStatus(Long categoryId, boolean status, Pageable pageable);
 }

@@ -150,4 +150,10 @@ public class ProductService {
     public List<ProductModel> findProductsWithDiscount() {
         return productRepository.findProductsWithDiscount();
     }
+
+    //find products by Category and pagination
+    public Page<ProductModel> findProductByCategory(Long categoryId, boolean status, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return productRepository.findByCategory_IdAndStatus(categoryId, status, pageable);
+    }
 }
