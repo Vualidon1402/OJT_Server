@@ -11,4 +11,9 @@ public class ApplyVoucherRequest {
 
     private String voucherCode;
     private double totalAmount;
+
+    @Override
+    public String toString() {
+        return "voucherCode: " + voucherCode + ", totalAmount: " + totalAmount;
+    }
 }

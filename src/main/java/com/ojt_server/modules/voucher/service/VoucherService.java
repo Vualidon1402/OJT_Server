@@ -20,7 +20,13 @@ public class VoucherService {
         return voucherRepository.save(voucher);
     }
     public Voucher getVoucherByCode(String voucherCode) {
-        return voucherRepository.findByCode(voucherCode);
+        List<Voucher> vouchers = voucherRepository.findByCode(voucherCode);
+        if (vouchers.isEmpty()) {
+            return null;
+        }
+        // Handle case when there are multiple vouchers with the same code
+        // For example, you can return the first voucher in the list
+        return vouchers.get(0);
     }
 
     public Voucher saveVoucher(Voucher voucher) {
@@ -30,5 +36,8 @@ public class VoucherService {
     //xóa voucher
     public void deleteVoucher(Long id) {
         voucherRepository.deleteById(id);
+    }
+    public List<Voucher> findByCode(String code) {
+           return voucherRepository.findByCode(code);
     }
 }
